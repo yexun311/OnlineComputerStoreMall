@@ -2,13 +2,14 @@ package com.ye.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 基类
  */
 @Data
-public class BaseEntity {
+public class BaseEntity implements Serializable {
 
     /** 创建者 */
     private String createdUser;
