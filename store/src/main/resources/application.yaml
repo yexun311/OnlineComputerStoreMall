@@ -1,6 +1,8 @@
 # dev-开发环境 st-测试环境 prod-生产环境
+
 spring:
   profiles:
     active: dev
 
-
+server:
+  port: 8080
