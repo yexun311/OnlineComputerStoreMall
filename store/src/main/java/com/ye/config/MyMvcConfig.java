@@ -26,8 +26,8 @@ public class MyMvcConfig implements WebMvcConfigurer {
         patterns.add("/web/login.html");
         patterns.add("/web/index.html");
         patterns.add("/web/product.html");
-        patterns.add("/users/reg");
-        patterns.add("/users/login");
+        patterns.add("/user/reg");
+        patterns.add("/user/login");
 
         //registry.addInterceptor(interceptor);完成拦截
         // 器的注册,后面的addPathPatterns表示拦截哪些url

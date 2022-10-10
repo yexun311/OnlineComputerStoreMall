@@ -147,7 +147,7 @@
 							<div class="form-group">
 								<label class="col-md-2 control-label">电话号码：</label>
 								<div class="col-md-8">
-									<input `id="phone" name="phone" type="text" class="form-control" placeholder="请输入电话号码" value="13311311313">
+									<input id="phone" name="phone" type="text" class="form-control" placeholder="请输入电话号码" value="13311311313">
 								</div>
 							</div>
 							<div class="form-group">
@@ -262,6 +262,65 @@
 			</div>
 		</footer>
 		<!--页脚结束-->
+		<script>
+			/**
+			 * 一旦检测到当前的页面被加载就会触发ready方法
+			 * $(document).ready(function(){
+			 *     //编写业务代码
+			 * });
+			 */
+			//点击"个人资料"四个字加载userdata.html页面时$(document).ready(function(){});就会起作用发送ajax请求
+			$(document).ready(function() {
+				$.ajax({
+					url: "/user/get_by_uid",
+					type: "GET",
+					//data为null也可以,因为这里get是从数据库拉取数据,不需要data
+					data: $("#form-change-info").serialize(),
+					dataType: "JSON",
+					success: function (json) {
+						if (json.code === 200) {
+							//将查询到的数据设置到控件中
+							$("#username").val(json.data.username);
+							$("#phone").val(json.data.phone);
+							$("#email").val(json.data.email);
+							var radio = json.data.gender === 0 ?
+									$("#gender-female") : $("#gender-male");
+							//prop()表示给某个元素添加属性及属性的值
+							radio.prop("checked","checked");
+						} else {
+							alert("用户的数据不存在")
+						}
+					},
+					error: function (xhr) {
+						//xhr.message可以获取未知异常的信息
+						alert("查询用户信息时产生未知的异常!"+xhr.message);
+					}
+				});
+			});
+			$("#btn-change-info").click(function () {
+				$.ajax({
+					url: "/user/change_info",
+					type: "POST",
+					data: $("#form-change-info").serialize(),
+					dataType: "JSON",
+					success: function (json) {
+						if (json.code === 200) {
+							alert("用户信息修改成功")
+							//修改成功后重新加载当前的页面
+							location.href = "userdata.html";
+						} else {
+							alert(json.message)
+						}
+					},
+					error: function (xhr) {
+						//xhr.message可以获取未知异常的信息
+						alert("用户信息修改时产生未知的异常!"+xhr.message);
+					}
+				});
+			});
+
+		</script>
+
 	</body>
 
 </html>

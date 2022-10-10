@@ -18,4 +18,24 @@
         select * from user where username = #{username}
     </select>
 
+    <update id="updateInfoByUid" parameterType="com.ye.entity.User">
+        update user
+        set
+            <!--if是条件判断标签,属性test接受的是一个返回值为boolean类型的条件,
+                如果test条件的结果为true则执行if标签内部的语句,注意逗号也要在标签内-->
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="gender != null and gender != ''">
+                gender = #{gender},
+            </if>
+            modified_user = #{modifiedUser},
+            modified_time = #{modifiedTime}
+        where
+            uid = #{uid}
+    </update>
+
 </mapper>

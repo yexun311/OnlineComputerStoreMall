@@ -11,8 +11,22 @@ spring:
     url: jdbc:mysql://localhost:3306/store?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  # 文件配置
+  servlet:
+    multipart:
+      max-file-size: 10MB # 最大支持上传文件大小为 10MB
+      max-request-size: 15MB # 最大请求大小为 15MB
+
 # 打印日志到控制台
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:/mapper/*.xml
+
+
+
+
+
+
+address:
+  maxCount: 20
