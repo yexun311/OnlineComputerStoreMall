@@ -1,12 +1,12 @@
 package com.ye.controller;
 
-import com.ye.common.ResultData;
-import com.ye.controller.ex.*;
-import com.ye.entity.User;
+import com.ye.common.result.Result;
+import com.ye.common.result.ResultSet;
+import com.ye.entity.UserEntity;
+import com.ye.exception.FailException;
 import com.ye.server.IUserService;
 import com.ye.utils.SessionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,23 +14,22 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 
 import static com.ye.common.constant.AVATAR_MAX_SIZE;
 
 @RestController
 @RequestMapping("/user")
-public class UserController extends BaseController {
+public class UserController {
 
     @Resource
     IUserService userService;
 
     /** 注册 */
     @RequestMapping("/reg")
-    public ResultData<Void> reg(User user){
-        userService.register(user);
-        return new ResultData<>(OK, "注册成功");
+    public ResultSet<Void> reg(UserEntity userEntity){
+        userService.register(userEntity);
+        return Result.success("注册成功");
     }
 
     /** 登录
@@ -38,14 +37,14 @@ public class UserController extends BaseController {
      * avater 放在 cookie（在别处）
      */
     @RequestMapping("/login")
-    public ResultData<User> login(String username,String password, HttpSession session){
-        User user = userService.login(username, password);
+    public ResultSet<UserEntity> login(String username, String password, HttpSession session){
+        UserEntity userEntity = userService.login(username, password);
 
         // 将 uid、username 放入 Session 便于使用
-        session.setAttribute("uid", user.getUid());
-        session.setAttribute("username", user.getUsername());
+        session.setAttribute("uid", userEntity.getUid());
+        session.setAttribute("username", userEntity.getUsername());
 
-        return new ResultData<>(OK,"登录成功", user);
+        return Result.success("登录成功", userEntity);
     }
 
     /**
@@ -53,36 +52,36 @@ public class UserController extends BaseController {
      * 登录用户修改密码，获取旧密码和新密码即可，uid 和 username 从 session 中获取
      */
     @RequestMapping("/change_password")
-    public ResultData<Void> changePassword(String oldPassword,
+    public ResultSet<Void> changePassword(String oldPassword,
                                            String newPassword,
                                            HttpSession session){
         int uid = Integer.parseInt(session.getAttribute("uid").toString());
         String username = session.getAttribute("username").toString();
         userService.changePassword(uid, username, oldPassword, newPassword);
 
-        return new ResultData<>(OK, "修改成功");
+        return Result.success("修改成功");
     }
 
     /** 修改个人资料的默认显示 */
     @RequestMapping("/get_by_uid")
-    public ResultData<User> getByUid(HttpSession session){
-        User data = userService.getByUid(SessionUtils.getUidFromSession(session));
-        return new ResultData<>(OK, data);
+    public ResultSet<UserEntity> getByUid(HttpSession session){
+        UserEntity data = userService.getByUid(SessionUtils.getUidFromSession(session));
+        return Result.success(data);
     }
 
     /** 修改个人资料 */
     @RequestMapping("/change_info")
-    public ResultData<Void> changeInfo(User user, HttpSession session){
+    public ResultSet<Void> changeInfo(UserEntity userEntity, HttpSession session){
         // user 对象中有四部分数据 username、 phone、 email、 gender
         // 控制层给业务层传递uid,并在业务层通过user.setUid(uid);将uid封装到user中
-        userService.changeInfo(SessionUtils.getUidFromSession(session), user);
-        return new ResultData<>(OK, "修改成功");
+        userService.changeInfo(SessionUtils.getUidFromSession(session), userEntity);
+        return Result.success("修改成功");
     }
 
     // TODO 没调成功
     /** 修改头像 */
     @RequestMapping("change_avatar")
-    public ResultData<String> changeAvatar(HttpSession session,
+    public ResultSet<String> changeAvatar(HttpSession session,
                                            MultipartFile file) {
         /*
          * 1.参数名为什么必须用file:在upload.html页面的147行<input type=
@@ -96,10 +95,10 @@ public class UserController extends BaseController {
          */
         //判断文件是否为null
         if (file.isEmpty()) {
-            throw new FileEmptyException("文件为空");
+            throw new FailException("文件为空");
         }
         if (file.getSize()>AVATAR_MAX_SIZE) {
-            throw new FileSizeException("文件超出限制");
+            throw new FailException("文件超出限制");
         }
         /* //判断文件的类型是否是我们规定的后缀类型
         String contentType = file.getContentType();
@@ -148,12 +147,8 @@ public class UserController extends BaseController {
              * 因为后者包含前者,如果先捕获IOException那么
              * FileStateException就永远不可能会被捕获
              */
-        } catch (FileStateException e) {
-            throw new FileStateException("文件状态异常");
-        } catch (IOException e) {
-            //这里不用打印e,而是用自己写的FileUploadIOException类并
-            // 抛出文件读写异常
-            throw new FileUploadIOException("文件读写异常");
+        } catch (Exception e) {
+            throw new FailException("文件状态异常");
         }
 
         Integer uid = SessionUtils.getUidFromSession(session);
@@ -161,7 +156,7 @@ public class UserController extends BaseController {
         String avatar = "/upload/"+filename;
         userService.changeAvatar(uid,avatar,username);
         //返回用户头像的路径给前端页面,将来用于头像展示使用
-        return new ResultData<>(OK,avatar);
+        return Result.success("", avatar);
     }
 
 }

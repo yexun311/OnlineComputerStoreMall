@@ -55,7 +55,7 @@
 							</div>
 						</li>
 						<li class="li-split">|</li>
-						<li><a href="login.html"><span class="fa fa-user"></span>&nbsp;登录</a></li>
+						<li><a href="login.html"><span class="fa fa-userEntity"></span>&nbsp;登录</a></li>
 					</ul>
 				</div>
 			</div>
@@ -272,7 +272,7 @@
 			//点击"个人资料"四个字加载userdata.html页面时$(document).ready(function(){});就会起作用发送ajax请求
 			$(document).ready(function() {
 				$.ajax({
-					url: "/user/get_by_uid",
+					url: "/userEntity/get_by_uid",
 					type: "GET",
 					//data为null也可以,因为这里get是从数据库拉取数据,不需要data
 					data: $("#form-change-info").serialize(),
@@ -299,7 +299,7 @@
 			});
 			$("#btn-change-info").click(function () {
 				$.ajax({
-					url: "/user/change_info",
+					url: "/userEntity/change_info",
 					type: "POST",
 					data: $("#form-change-info").serialize(),
 					dataType: "JSON",

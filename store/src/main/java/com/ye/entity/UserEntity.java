@@ -12,8 +12,8 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("user")
-public class User extends BaseEntity{
+@TableName("t_user")
+public class UserEntity extends BaseEntity{
 
     /** 用户id */
     @TableId(type = IdType.AUTO)
@@ -32,14 +32,14 @@ public class User extends BaseEntity{
     /** 性别：0-女，1-男 */
     private Integer gender;
     /** 头像 */
-    private String avater;
+    private String avatar;
     /** 是否删除：0-未删除，1-已删除 */
     private Integer isDelete;
 
-    public User() {
+    public UserEntity() {
     }
 
-    public User(Integer uid, String username, String password, String salt, String phone, String email, Integer gender, String avater, Integer isDelete) {
+    public UserEntity(Integer uid, String username, String password, String salt, String phone, String email, Integer gender, String avatar, Integer isDelete) {
         this.uid = uid;
         this.username = username;
         this.password = password;
@@ -47,7 +47,7 @@ public class User extends BaseEntity{
         this.phone = phone;
         this.email = email;
         this.gender = gender;
-        this.avater = avater;
+        this.avatar = avatar;
         this.isDelete = isDelete;
     }
 }

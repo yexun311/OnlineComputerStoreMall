@@ -5,7 +5,7 @@
 
 <mapper namespace="com.ye.mapper.UserMapper">
 
-    <resultMap id="UserMap" type="com.ye.entity.User">
+    <resultMap id="UserMap" type="com.ye.entity.UserEntity">
         <result column="uid" property="uid"/>
         <result column="is_delete" property="isDelete"/>
         <result column="created_user" property="createdUser"/>
@@ -15,11 +15,11 @@
     </resultMap>
 
     <select id="selectUserByUsername" parameterType="String" resultMap="UserMap">
-        select * from user where username = #{username}
+        select * from userEntity where username = #{username}
     </select>
 
-    <update id="updateInfoByUid" parameterType="com.ye.entity.User">
-        update user
+    <update id="updateInfoByUid" parameterType="com.ye.entity.UserEntity">
+        update userEntity
         set
             <!--if是条件判断标签,属性test接受的是一个返回值为boolean类型的条件,
                 如果test条件的结果为true则执行if标签内部的语句,注意逗号也要在标签内-->

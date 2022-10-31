@@ -2,10 +2,8 @@ package com.ye.server.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ye.entity.Address;
-import com.ye.entity.User;
-import com.ye.ex.AddressOverflowException;
-import com.ye.ex.InsertException;
-import com.ye.ex.UserNotExistException;
+import com.ye.entity.UserEntity;
+import com.ye.exception.FailException;
 import com.ye.mapper.AddressMapper;
 import com.ye.mapper.UserMapper;
 import com.ye.server.IAddressService;
@@ -35,16 +33,16 @@ public class AddressServiceImpl implements IAddressService {
     @Override
     public void addAddress(int uid, String username, Address address) {
         // 判断用户是否存在
-        User result = userMapper.selectById(uid);
+        UserEntity result = userMapper.selectById(uid);
         if (Objects.isNull(result) || result.getIsDelete() == 1)
-            throw new UserNotExistException();
+            throw new FailException();
 
         // 判断地址数量是否溢出
         QueryWrapper<Address> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(Address::getUid, uid);
         int count = addressMapper.selectCount(wrapper).intValue();
         if ( count == maxCount)
-            throw new AddressOverflowException("地址已满（上限20条）");
+            throw new FailException("地址已满（上限20条）");
 
         // 第一条地址设为默认
         address.setIsDefault(count == 0 ? 1 : 0);
@@ -56,6 +54,6 @@ public class AddressServiceImpl implements IAddressService {
         address.setModifiedTime(new Date());
 
         if (addressMapper.insert(address) != 1)
-            throw new InsertException("插入异常");
+            throw new FailException("插入异常");
     }
 }

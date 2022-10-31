@@ -54,7 +54,7 @@
 							</div>
 						</li>
 						<li class="li-split">|</li>
-						<li><a href="login.html"><span class="fa fa-user"></span>&nbsp;登录</a></li>
+						<li><a href="login.html"><span class="fa fa-userEntity"></span>&nbsp;登录</a></li>
 					</ul>
 				</div>
 			</div>
@@ -141,7 +141,7 @@
 							<div class="form-group">
 								<label class="col-md-2 control-label">选择头像:</label>
 								<div class="col-md-5">
-									<img id="img-avatar" src="../images/index/user.jpg" class="img-responsive" />
+									<img id="img-avatar" src="../images/index/userEntity.jpg" class="img-responsive" />
 								</div>
 								<div class="clearfix"></div>
 								<div class="col-md-offset-2 col-md-4">
@@ -246,7 +246,7 @@
 		<script>
 			$("#btn-change-avatar").click(function () {
 				$.ajax({
-					url: "/user/change_avatar",
+					url: "/userEntity/change_avatar",
 					type: "POST",
 					data: new FormData($("#form-change-avatar")[0]),
 					processData: false,//处理数据的形式,关闭处理数据
