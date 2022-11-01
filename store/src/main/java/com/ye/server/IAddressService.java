@@ -1,6 +1,6 @@
 package com.ye.server;
 
-import com.ye.entity.Address;
+import com.ye.model.entity.AddressEntity;
 
 /**
  * 收货地址业务层接口
@@ -8,5 +8,5 @@ import com.ye.entity.Address;
 public interface IAddressService {
 
     /** 添加地址 */
-    void addAddress(int uid, String username, Address address);
+    void addAddress(int uid, String username, AddressEntity address);
 }

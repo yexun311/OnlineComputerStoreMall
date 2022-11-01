@@ -3,13 +3,14 @@ package com.ye.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-public class MyMvcConfig implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer {
 
     /** 配置拦截器 */
     @Override
@@ -28,6 +29,8 @@ public class MyMvcConfig implements WebMvcConfigurer {
         patterns.add("/web/product.html");
         patterns.add("/user/reg");
         patterns.add("/user/login");
+        patterns.add("/doc.html");
+        patterns.add("/swagger-ui.html");
 
         //registry.addInterceptor(interceptor);完成拦截
         // 器的注册,后面的addPathPatterns表示拦截哪些url
@@ -37,5 +40,13 @@ public class MyMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(patterns);
 
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+        /* swagger doc.html 配置 */
+        registry.addResourceHandler("doc.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
     }
 }

@@ -1,9 +1,9 @@
-package com.ye.utils;
+package com.ye.util;
 
 /**
  * 字符串工具类
  */
-public class StringUtils {
+public class StringUtil {
 
     /**
      * 判断是否为空（空 或 null 均返回 true）

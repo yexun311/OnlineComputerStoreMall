@@ -1,12 +1,18 @@
 package com.ye.server.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.ye.entity.UserEntity;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ye.model.req.RegisterReq;
+import com.ye.model.resp.UserInfoResp;
+import com.ye.model.dto.LoginDto;
+import com.ye.model.entity.UserEntity;
 import com.ye.exception.FailException;
 import com.ye.mapper.UserMapper;
 import com.ye.server.IUserService;
-import com.ye.utils.MD5Utils;
-import com.ye.utils.StringUtils;
+import com.ye.util.MD5Util;
+import com.ye.util.StringUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -15,19 +21,25 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> implements IUserService {
 
     @Resource
     UserMapper userMapper;
 
     /** 注册 */
     @Override
-    public void register(UserEntity userEntity){
-        if (StringUtils.isEmpty(userEntity.getUsername()) || StringUtils.isEmpty(userEntity.getPassword()))
-            throw new FailException("用户名或密码为空");
-        if (!Objects.isNull(userMapper.selectUserByUsername(userEntity.getUsername())))
-            throw new FailException("用户名被占用");
+    public void register(RegisterReq registerReq){
+        if (StringUtil.isEmpty(registerReq.getAccount()) || StringUtil.isEmpty(registerReq.getPassword()))
+            throw new FailException("账号或密码为空");
+        if (userMapper.selectUserByAccount(registerReq.getAccount()) >= 1)
+            throw new FailException("账号已存在");
+        if (userMapper.selectCount(new QueryWrapper<UserEntity>().lambda()
+                .eq(UserEntity::getUserName, registerReq.getUserName())
+                .eq(UserEntity::getIsDelete, 0)) >= 1)
+            throw new FailException("用户名已存在");
 
+        UserEntity userEntity = new UserEntity();
+        BeanUtils.copyProperties(registerReq, userEntity);
         /*
          * 密码加密处理作用:
          * 1.后端不再能直接看到用户的密码2.忽略了密码原来的强度,提升了数据安全性
@@ -37,48 +49,48 @@ public class UserServiceImpl implements IUserService {
          */
         String salt = UUID.randomUUID().toString();
         userEntity.setSalt(salt);
-        userEntity.setPassword(getMD5Password(userEntity.getPassword(), salt));
+        userEntity.setPassword(getMD5Password(registerReq.getPassword(), salt));
         userEntity.setIsDelete(0);
-        userEntity.setCreatedUser(userEntity.getUsername());
-        userEntity.setCreatedTime(new Date());
+        userEntity.setCreateTime(new Date());
 
         if (userMapper.insert(userEntity) != 1)
             throw new FailException("插入异常");
-
     }
 
     /** 登录 */
     @Override
-    public UserEntity login(String username, String password){
+    public LoginDto login(String account, String password){
 
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
+        if (StringUtil.isEmpty(account) || StringUtil.isEmpty(password)){
             throw new FailException("账号或密码为空");
         }
-        UserEntity result = userMapper.selectUserByUsername(username);
-        if (Objects.isNull(result) || result.getIsDelete() == 1){
-            throw new FailException();// 用户不存在
+        UserEntity result = userMapper.selectOne(new QueryWrapper<UserEntity>().lambda()
+                .eq(UserEntity::getAccount, account)
+                .eq(UserEntity::getIsDelete, 0));
+        if (Objects.isNull(result)){
+            throw new FailException("用户不存在");// 用户不存在
         }
 
         // 比较密码
         if (!result.getPassword().equals(getMD5Password(password, result.getSalt()))){
-            throw new FailException();// 密码不匹配
+            throw new FailException("密码错误");// 密码不匹配
         }
 
         //方法login返回的用户数据是为了辅助其他页面做数据展示使用(只会用到uid,username,avatar)
         //所以可以new一个新的user只赋这三个变量的值,这样使层与层之间传输时数据体量变小,后台层与
         // 层之间传输时数据量越小性能越高,前端也是的,数据量小了前端响应速度就变快了
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUid(result.getUid());
-        userEntity.setUsername(result.getUsername());
-        userEntity.setAvatar(result.getAvatar());// 头像
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUid(result.getUid());
+        loginDto.setUserName(result.getUserName());
+        //loginDto.setAvatar(result.getAvatar());// 头像
 
-        return result;
+        return loginDto;
 
     }
 
     /** 修改密码 */
     @Override
-    public void changePassword(int uid, String username, String oldPassword, String newPassword){
+    public void changePassword(int uid, String oldPassword, String newPassword){
         // 验证用户是否存在
         UserEntity result = userMapper.selectById(uid);
         if (Objects.isNull(result) || result.getIsDelete() == 1)
@@ -90,56 +102,48 @@ public class UserServiceImpl implements IUserService {
         UpdateWrapper<UserEntity> wrapper = new UpdateWrapper<>();
         wrapper.lambda()
                 .set(UserEntity::getPassword, getMD5Password(newPassword, result.getSalt()))
-                .set(UserEntity::getModifiedUser, username) // 更新人
-                .set(UserEntity::getModifiedTime, new Date()) // 更新时间
                 .eq(UserEntity::getUid, uid);
         if (userMapper.update(null, wrapper) != 1)
             throw new FailException("更新异常");
     }
 
-    /** 修改个人资料是显示当前个人信息 */
+    /** 显示用户信息 */
     @Override
-    public UserEntity getByUid(Integer uid) {
+    public UserInfoResp getByUid(Integer uid) {
         UserEntity result = userMapper.selectById(uid);
         if (Objects.isNull(result) || result.getIsDelete() == 1)
             throw new FailException("用户不存在");
         // 返回要用到的数据即可
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(result.getUsername());
-        userEntity.setPhone(result.getPhone());
-        userEntity.setEmail(result.getEmail());
-        userEntity.setGender(result.getGender());
-        return userEntity;
+        UserInfoResp userInfoResp = new UserInfoResp();
+        userInfoResp.setUserName(result.getUserName());
+        userInfoResp.setPhone(result.getPhone());
+        userInfoResp.setEmail(result.getEmail());
+        userInfoResp.setGender(result.getGender());
+        return userInfoResp;
     }
 
     /**
      * 修改个人信息
-     * 状态：已登录
      */
     @Override
-    public void changeInfo(int uid, UserEntity userEntity) {
+    public void changeInfo(int uid, UserInfoResp userInfoResp) {
         UserEntity result = userMapper.selectById(uid);
         if (Objects.isNull(result) || result.getIsDelete() == 1)
             throw new FailException("用户不存在");
-        userEntity.setUid(uid);
-        userEntity.setUsername(result.getUsername());
-        userEntity.setModifiedUser(result.getUsername());
-        userEntity.setModifiedTime(new Date());
-        if (userMapper.updateInfoByUid(userEntity) != 1)
+        userInfoResp.setUid(uid);
+        if (userMapper.updateInfoByUid(userInfoResp) != 1)
             throw new FailException("更新异常");
     }
 
     /** 更换头像 */
     @Override
-    public void changeAvatar(int uid, String avatar, String username) {
+    public void changeAvatar(int uid, String avatar) {
         UserEntity result = userMapper.selectById(uid);
         if (Objects.isNull(result) || result.getIsDelete() == 1)
             throw new FailException("用户不存在");
         UpdateWrapper<UserEntity> wrapper = new UpdateWrapper<>();
         wrapper.lambda()
                 .set(UserEntity::getAvatar, avatar)
-                .set(UserEntity::getModifiedUser, username)
-                .set(UserEntity::getModifiedTime, new Date())
                 .eq(UserEntity::getUid, uid);
         if (userMapper.update(null, wrapper) != 1)
             throw new FailException("更新异常");
@@ -148,7 +152,7 @@ public class UserServiceImpl implements IUserService {
 
     public String getMD5Password(String password, String salt){
         for (int i = 0; i < 3; i++) {
-            password = MD5Utils.MD5(salt + password + salt);
+            password = MD5Util.MD5(salt + password + salt);
         }
         return password.toUpperCase();
 

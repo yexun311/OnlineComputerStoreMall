@@ -1,6 +1,6 @@
 package com.ye.service;
 
-import com.ye.entity.Address;
+import com.ye.model.entity.AddressEntity;
 import com.ye.server.IAddressService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +15,7 @@ public class AddressServiceTest {
 
     @Test
     public void test01(){
-        Address address = new Address();
+        AddressEntity address = new AddressEntity();
         address.setCityName("cn");
         address.setIsDefault(1);
         addressService.addAddress(29, "admin", address);

@@ -5,7 +5,7 @@
 
 <mapper namespace="com.ye.mapper.AddressMapper">
 
-    <resultMap id="AddressMap" type="com.ye.entity.Address">
+    <resultMap id="AddressMap" type="com.ye.model.entity.AddressEntity">
         <result column="aid" property="aid"/>
         <result column="province_name" property="provinceName"/>
         <result column="province_code" property="provinceCode"/>

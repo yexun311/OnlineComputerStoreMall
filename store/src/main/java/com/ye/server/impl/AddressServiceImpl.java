@@ -1,8 +1,8 @@
 package com.ye.server.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.ye.entity.Address;
-import com.ye.entity.UserEntity;
+import com.ye.model.entity.AddressEntity;
+import com.ye.model.entity.UserEntity;
 import com.ye.exception.FailException;
 import com.ye.mapper.AddressMapper;
 import com.ye.mapper.UserMapper;
@@ -31,15 +31,15 @@ public class AddressServiceImpl implements IAddressService {
      * 限制收货地址为 20 条
      */
     @Override
-    public void addAddress(int uid, String username, Address address) {
+    public void addAddress(int uid, String username, AddressEntity address) {
         // 判断用户是否存在
         UserEntity result = userMapper.selectById(uid);
         if (Objects.isNull(result) || result.getIsDelete() == 1)
             throw new FailException();
 
         // 判断地址数量是否溢出
-        QueryWrapper<Address> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(Address::getUid, uid);
+        QueryWrapper<AddressEntity> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(AddressEntity::getUid, uid);
         int count = addressMapper.selectCount(wrapper).intValue();
         if ( count == maxCount)
             throw new FailException("地址已满（上限20条）");
@@ -48,10 +48,8 @@ public class AddressServiceImpl implements IAddressService {
         address.setIsDefault(count == 0 ? 1 : 0);
 
         address.setUid(uid);
-        address.setCreatedUser(username);
-        address.setCreatedTime(new Date());
-        address.setModifiedUser(username);
-        address.setModifiedTime(new Date());
+        address.setCreateTime(new Date());
+        address.setUpdateTime(new Date());
 
         if (addressMapper.insert(address) != 1)
             throw new FailException("插入异常");

@@ -41,6 +41,13 @@
 							<input name="username" type="text" class="form-control" placeholder="请输入用户名">
 						</div>
 					</div>
+					<!--账号-->
+					<div class="form-group">
+						<label class="col-md-3 control-label">账号：</label>
+						<div class="col-md-8">
+							<input name="account" type="text" class="form-control" placeholder="请输入账号">
+						</div>
+					</div>
 					<!--密码-->
 					<div class="form-group">
 						<label class="col-md-3 control-label"> 密码：</label>
@@ -162,11 +169,7 @@
 					success: function (json) { //1.js是弱数据类型,这个地方不用声明json的数据类型
 						//2.如果服务器成功响应就会将返回的数据传给形参,比如{state: 4000,message: "用户名
 						// 已经被占用",data: null}
-						if (json.code === 200) {
-							alert(json.message)
-						} else {
-							alert(json.message)
-						}
+						alert(json.code + " " + json.message)
 					},
 					error: function (xhr) { //如果问题不在可控范围内,服务器就不会返回自己定
 						//义的json字符串:{state: 4000,message: "用户名已经被占用",data: null}

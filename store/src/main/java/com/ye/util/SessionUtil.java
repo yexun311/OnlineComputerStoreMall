@@ -1,11 +1,11 @@
-package com.ye.utils;
+package com.ye.util;
 
 import javax.servlet.http.HttpSession;
 
 /**
  * Session 工具类
  */
-public class SessionUtils {
+public class SessionUtil {
 
     /** 获取 Session 对象中的 uid */
     public static Integer getUidFromSession(HttpSession session){

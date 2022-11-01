@@ -1,4 +1,4 @@
-package com.ye.entity;
+package com.ye.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -8,28 +8,29 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 用户类
+ * 用户实体类
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("t_user")
+@TableName("user")
 public class UserEntity extends BaseEntity{
 
     /** 用户id */
     @TableId(type = IdType.AUTO)
     private Integer uid;
-    /** 用户账号 */
-    @TableField("username")
-    private String username;
-    /** 用户密码 */
+    /** 账号 */
+    private String account;
+    /** 密码 */
     private String password;
     /** 盐值 */
     private String salt;
+    /** 用户名 */
+    private String userName;
     /** 联系电话 */
     private String phone;
     /** 电子邮箱 */
     private String email;
-    /** 性别：0-女，1-男 */
+    /** 性别：0-女，1-男 2-保密*/
     private Integer gender;
     /** 头像 */
     private String avatar;
@@ -39,10 +40,11 @@ public class UserEntity extends BaseEntity{
     public UserEntity() {
     }
 
-    public UserEntity(Integer uid, String username, String password, String salt, String phone, String email, Integer gender, String avatar, Integer isDelete) {
+    public UserEntity(Integer uid, String account, String password, String userName, String salt, String phone, String email, Integer gender, String avatar, Integer isDelete) {
         this.uid = uid;
-        this.username = username;
+        this.account = account;
         this.password = password;
+        this.userName = userName;
         this.salt = salt;
         this.phone = phone;
         this.email = email;

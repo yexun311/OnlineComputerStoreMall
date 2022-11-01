@@ -2,11 +2,18 @@ package com.ye.controller;
 
 import com.ye.common.result.Result;
 import com.ye.common.result.ResultSet;
-import com.ye.entity.UserEntity;
+import com.ye.model.req.LoginReq;
+import com.ye.model.req.RegisterReq;
+import com.ye.model.resp.UserInfoResp;
+import com.ye.model.dto.LoginDto;
 import com.ye.exception.FailException;
 import com.ye.server.IUserService;
-import com.ye.utils.SessionUtils;
+import com.ye.util.SessionUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +25,7 @@ import java.util.UUID;
 
 import static com.ye.common.constant.AVATAR_MAX_SIZE;
 
+@Api("用户管理")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -25,61 +33,28 @@ public class UserController {
     @Resource
     IUserService userService;
 
-    /** 注册 */
-    @RequestMapping("/reg")
-    public ResultSet<Void> reg(UserEntity userEntity){
-        userService.register(userEntity);
-        return Result.success("注册成功");
-    }
 
-    /** 登录
-     * 获取 Session 对象中的 uid、username
-     * avater 放在 cookie（在别处）
-     */
-    @RequestMapping("/login")
-    public ResultSet<UserEntity> login(String username, String password, HttpSession session){
-        UserEntity userEntity = userService.login(username, password);
-
-        // 将 uid、username 放入 Session 便于使用
-        session.setAttribute("uid", userEntity.getUid());
-        session.setAttribute("username", userEntity.getUsername());
-
-        return Result.success("登录成功", userEntity);
-    }
-
-    /**
-     * 修改密码
-     * 登录用户修改密码，获取旧密码和新密码即可，uid 和 username 从 session 中获取
-     */
-    @RequestMapping("/change_password")
-    public ResultSet<Void> changePassword(String oldPassword,
-                                           String newPassword,
-                                           HttpSession session){
-        int uid = Integer.parseInt(session.getAttribute("uid").toString());
-        String username = session.getAttribute("username").toString();
-        userService.changePassword(uid, username, oldPassword, newPassword);
-
-        return Result.success("修改成功");
-    }
-
-    /** 修改个人资料的默认显示 */
+    /** 个人资料显示 */
+    @ApiOperation("个人资料显示")
     @RequestMapping("/get_by_uid")
-    public ResultSet<UserEntity> getByUid(HttpSession session){
-        UserEntity data = userService.getByUid(SessionUtils.getUidFromSession(session));
+    public ResultSet<UserInfoResp> getByUid(HttpSession session){
+        UserInfoResp data = userService.getByUid(SessionUtil.getUidFromSession(session));
         return Result.success(data);
     }
 
     /** 修改个人资料 */
+    @ApiOperation("修改个人资料")
     @RequestMapping("/change_info")
-    public ResultSet<Void> changeInfo(UserEntity userEntity, HttpSession session){
+    public ResultSet<Void> changeInfo(UserInfoResp userInfoResp, HttpSession session){
         // user 对象中有四部分数据 username、 phone、 email、 gender
         // 控制层给业务层传递uid,并在业务层通过user.setUid(uid);将uid封装到user中
-        userService.changeInfo(SessionUtils.getUidFromSession(session), userEntity);
+        userService.changeInfo(SessionUtil.getUidFromSession(session), userInfoResp);
         return Result.success("修改成功");
     }
 
     // TODO 没调成功
     /** 修改头像 */
+    @ApiOperation("修改头像")
     @RequestMapping("change_avatar")
     public ResultSet<String> changeAvatar(HttpSession session,
                                            MultipartFile file) {
@@ -151,10 +126,10 @@ public class UserController {
             throw new FailException("文件状态异常");
         }
 
-        Integer uid = SessionUtils.getUidFromSession(session);
-        String username = SessionUtils.getUsernameFromSession(session);
+        Integer uid = SessionUtil.getUidFromSession(session);
+        String username = SessionUtil.getUsernameFromSession(session);
         String avatar = "/upload/"+filename;
-        userService.changeAvatar(uid,avatar,username);
+        userService.changeAvatar(uid,avatar);
         //返回用户头像的路径给前端页面,将来用于头像展示使用
         return Result.success("", avatar);
     }

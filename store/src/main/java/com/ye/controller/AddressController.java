@@ -2,9 +2,9 @@ package com.ye.controller;
 
 import com.ye.common.result.Result;
 import com.ye.common.result.ResultSet;
-import com.ye.entity.Address;
+import com.ye.model.entity.AddressEntity;
 import com.ye.server.IAddressService;
-import com.ye.utils.SessionUtils;
+import com.ye.util.SessionUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,9 +20,9 @@ public class AddressController {
 
     /** 添加地址 */
     @RequestMapping("/add")
-    public ResultSet<Void> addAddress(Address address, HttpSession session){
-        int uid = SessionUtils.getUidFromSession(session);
-        String username = SessionUtils.getUsernameFromSession(session);
+    public ResultSet<Void> addAddress(AddressEntity address, HttpSession session){
+        int uid = SessionUtil.getUidFromSession(session);
+        String username = SessionUtil.getUsernameFromSession(session);
         addressService.addAddress(uid, username, address);
 
         return Result.success("地址添加成功");

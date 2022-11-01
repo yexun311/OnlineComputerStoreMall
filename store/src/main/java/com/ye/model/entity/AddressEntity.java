@@ -1,4 +1,4 @@
-package com.ye.entity;
+package com.ye.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("address")
-public class Address extends BaseEntity {
+public class AddressEntity extends BaseEntity {
 
     /** 收货地址id */
 	@TableId(type = IdType.AUTO)

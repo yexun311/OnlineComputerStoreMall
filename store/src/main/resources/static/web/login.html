@@ -37,11 +37,11 @@
 				<p>用户登录</p>
 				<!--表单开始-->
 				<form id="form-login" action="index.html"  class="form-horizontal" role="form">
-					<!--用户名-->
+					<!--账号-->
 					<div class="form-group">
-						<label for="username" class="col-md-3 control-label">名字：</label>
+						<label for="account" class="col-md-3 control-label">账号：</label>
 						<div class="col-md-8">
-							<input name="username" type="text" class="form-control" id="username"  placeholder="请输入用户名">
+							<input name="account" type="text" class="form-control" id="account"  placeholder="请输入账号">
 						</div>
 					</div>
 					<!--密码-->
@@ -147,7 +147,7 @@
 		<script>
 			$("#btn-login").click(function () {
 				$.ajax({
-					url: "/userEntity/login",
+					url: "/user/login",
 					type: "POST",
 					data: $("#form-login").serialize(),
 					dataType: "JSON",

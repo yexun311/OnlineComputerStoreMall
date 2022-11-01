@@ -18,10 +18,10 @@ public class LoginHandlerInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
         // 登录成功，uid 放入 session
         Object obj = request.getSession().getAttribute("uid");
-        if (Objects.isNull(obj)){
+        /* if (Objects.isNull(obj)){
             response.sendRedirect("/web/login.html");
             return false;
-        }
+        } */
 
         // 放行
         return true;

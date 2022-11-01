@@ -18,7 +18,6 @@ public class GlobalException {
     /*
      * 抛出异常返回的 http 状态码均为 200
      */
-
     private final Logger log = LoggerFactory.getLogger(GlobalException.class);
 
     @ExceptionHandler(FailException.class)

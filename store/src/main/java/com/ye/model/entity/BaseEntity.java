@@ -1,4 +1,4 @@
-package com.ye.entity;
+package com.ye.model.entity;
 
 import lombok.Data;
 
@@ -11,13 +11,9 @@ import java.util.Date;
 @Data
 public class BaseEntity implements Serializable {
 
-    /** 创建者 */
-    private String createdUser;
     /** 创建时间 */
-    private Date createdTime;
-    /** 修改者 */
-    private String modifiedUser;
+    private Date createTime;
     /** 最后修改时间 */
-    private Date modifiedTime;
+    private Date updateTime;
 
 }
