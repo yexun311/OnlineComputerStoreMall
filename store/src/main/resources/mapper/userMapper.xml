@@ -21,7 +21,7 @@
 
     <update id="updateInfoByUid" parameterType="com.ye.model.resp.UserInfoResp">
         UPDATE user
-        SET
+        <set>
             <!--if是条件判断标签,属性test接受的是一个返回值为boolean类型的条件,
                 如果test条件的结果为true则执行if标签内部的语句,注意逗号也要在标签内-->
             <if test="phone != null and phone != ''">
@@ -33,7 +33,8 @@
             <if test="gender != null and gender != ''">
                 gender = #{gender},
             </if>
-        where
+        </set>
+        WHERE
             uid = #{uid}
     </update>
 

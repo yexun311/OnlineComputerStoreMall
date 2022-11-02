@@ -2,11 +2,13 @@ package com.ye.common.result;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 统一返回对象
  */
 @Data
-public class ResultSet<T> {
+public class ResultSet<T> implements Serializable {
 
     /** 状态码 */
     private int code;

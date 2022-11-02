@@ -147,9 +147,10 @@
 		<script>
 			$("#btn-login").click(function () {
 				$.ajax({
-					url: "/user/login",
+					url: "/login",
 					type: "POST",
-					data: $("#form-login").serialize(),
+					data: JSON.stringify($("#form-login").serializeJSON()),
+					contentType: "application/json;charset=utf-8",
 					dataType: "JSON",
 					success: function (json) {
 						if (json.code === 200) {
@@ -170,6 +171,23 @@
 				console.log(avatar);//调试用
 				$("#img-avatar").attr("src",avatar);
 			})
+
+			$.fn.serializeJSON=function() {
+				var serializeObj = {};
+				var array = this.serializeArray();
+				$(array).each(function () {
+					if (serializeObj[this.name]) {
+						if ($.isArray(serializeObj[this.name])) {
+							serializeObj[this.name].push(this.value);
+						} else {
+							serializeObj[this.name] = [serializeObj[this.name], this.value];
+						}
+					} else {
+						serializeObj[this.name] = this.value;
+					}
+				});
+				return serializeObj;
+			};
 		</script>
 	</body>
 </html>

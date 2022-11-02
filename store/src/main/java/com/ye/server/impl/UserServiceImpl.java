@@ -97,7 +97,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
             throw new FailException("用户不存在");
         // 验证原密码是否正确
         if (!result.getPassword().equals(getMD5Password(oldPassword, result.getSalt())))
-            throw new FailException("密码错误");
+            throw new FailException("原密码错误");
         // 更新密码
         UpdateWrapper<UserEntity> wrapper = new UpdateWrapper<>();
         wrapper.lambda()

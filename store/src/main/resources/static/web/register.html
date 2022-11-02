@@ -36,9 +36,9 @@
 				<form id="form-reg" class="form-horizontal" role="form">
 					<!--用户名-->
 					<div class="form-group">
-						<label class="col-md-3 control-label">名字：</label>
+						<label class="col-md-3 control-label">名称：</label>
 						<div class="col-md-8">
-							<input name="username" type="text" class="form-control" placeholder="请输入用户名">
+							<input name="userName" type="text" class="form-control" placeholder="请输入用户名">
 						</div>
 					</div>
 					<!--账号-->
@@ -158,18 +158,23 @@
 
 				//2.发送ajax()的异步请求来完成用户的注册功能
 				$.ajax({
-					url: "/userEntity/reg",
+					url: "/reg",
 					type: "POST",
 
 					//serialize这个API会自动检测该表单有什么控件,每个控件检测后还会获取每个控
 					// 件的值,拿到这个值后并自动拼接成形如username=Tom&password=123的结构
-					data: $("#form-reg").serialize(),
-
+					data: JSON.stringify($("#form-reg").serializeJSON()),
+					contentType:"application/json;charset=utf-8",
 					dataType: "JSON",
 					success: function (json) { //1.js是弱数据类型,这个地方不用声明json的数据类型
 						//2.如果服务器成功响应就会将返回的数据传给形参,比如{state: 4000,message: "用户名
 						// 已经被占用",data: null}
-						alert(json.code + " " + json.message)
+						if (json.code === 200) {
+							alert(json.code + " " + json.message)
+							location.href = "login.html"
+						}
+						else
+							alert(json.code + " " + json.message)
 					},
 					error: function (xhr) { //如果问题不在可控范围内,服务器就不会返回自己定
 						//义的json字符串:{state: 4000,message: "用户名已经被占用",data: null}
@@ -178,6 +183,23 @@
 					}
 				});
 			});
+
+			$.fn.serializeJSON=function() {
+				var serializeObj = {};
+				var array = this.serializeArray();
+				$(array).each(function () {
+					if (serializeObj[this.name]) {
+						if ($.isArray(serializeObj[this.name])) {
+							serializeObj[this.name].push(this.value);
+						} else {
+							serializeObj[this.name] = [serializeObj[this.name], this.value];
+						}
+					} else {
+						serializeObj[this.name] = this.value;
+					}
+				});
+				return serializeObj;
+			};
 		</script>
 
 	</body>

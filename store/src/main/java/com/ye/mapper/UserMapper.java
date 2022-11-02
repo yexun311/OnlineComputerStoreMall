@@ -14,6 +14,6 @@ public interface UserMapper extends BaseMapper<UserEntity> {
     Integer selectUserByAccount(String account);
 
     /** 通过 uid 更新用户信息 */
-    Integer updateInfoByUid(@Param("req") UserInfoResp userInfoResp);
+    Integer updateInfoByUid(UserInfoResp userInfoResp);
 
 }

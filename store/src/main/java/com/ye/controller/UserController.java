@@ -33,10 +33,9 @@ public class UserController {
     @Resource
     IUserService userService;
 
-
     /** 个人资料显示 */
     @ApiOperation("个人资料显示")
-    @RequestMapping("/get_by_uid")
+    @RequestMapping("/get_info")
     public ResultSet<UserInfoResp> getByUid(HttpSession session){
         UserInfoResp data = userService.getByUid(SessionUtil.getUidFromSession(session));
         return Result.success(data);
@@ -45,7 +44,7 @@ public class UserController {
     /** 修改个人资料 */
     @ApiOperation("修改个人资料")
     @RequestMapping("/change_info")
-    public ResultSet<Void> changeInfo(UserInfoResp userInfoResp, HttpSession session){
+    public ResultSet<Void> changeInfo(@RequestBody UserInfoResp userInfoResp, HttpSession session){
         // user 对象中有四部分数据 username、 phone、 email、 gender
         // 控制层给业务层传递uid,并在业务层通过user.setUid(uid);将uid封装到user中
         userService.changeInfo(SessionUtil.getUidFromSession(session), userInfoResp);

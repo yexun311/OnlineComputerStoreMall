@@ -1,5 +1,6 @@
 package com.ye.config;
 
+import com.ye.intercepter.LoginHandlerInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -27,8 +28,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         patterns.add("/web/login.html");
         patterns.add("/web/index.html");
         patterns.add("/web/product.html");
-        patterns.add("/user/reg");
-        patterns.add("/user/login");
+        patterns.add("/reg");
+        patterns.add("/login");
         patterns.add("/doc.html");
         patterns.add("/swagger-ui.html");
 

@@ -24,7 +24,7 @@ public class LoginController {
 
     /** 注册 */
     @ApiOperation("注册")
-    @RequestMapping("/reg")
+    @PostMapping("/reg")
     public ResultSet<Void> reg(@RequestBody RegisterReq registerReq){
         userService.register(registerReq);
         return Result.success("注册成功");
@@ -35,7 +35,7 @@ public class LoginController {
      * avater 放在 cookie（在别处）
      */
     @ApiOperation("登录")
-    @RequestMapping("/login")
+    @PostMapping("/login")
     public ResultSet<LoginDto> login(@RequestBody LoginReq loginReq, HttpSession session){
         LoginDto loginDto = userService.login(loginReq.getAccount(), loginReq.getPassword());
 
@@ -51,9 +51,9 @@ public class LoginController {
      * 登录用户修改密码，获取旧密码和新密码即可，uid 和 username 从 session 中获取
      */
     @ApiOperation("修改密码")
-    @RequestMapping("/change_password")
-    public ResultSet<Void> changePassword(@RequestParam String oldPassword,
-                                          String newPassword,
+    @GetMapping("/change_password")
+    public ResultSet<Void> changePassword(@RequestParam("oldPassword") String oldPassword,
+                                          @RequestParam String newPassword,
                                           HttpSession session){
         int uid = SessionUtil.getUidFromSession(session);
         userService.changePassword(uid, oldPassword, newPassword);
@@ -61,8 +61,14 @@ public class LoginController {
         return Result.success("修改成功");
     }
 
-    public ResultSet<Void> logout(){
-
+    /**
+     * 登出
+     * 清理 session 即可
+     */
+    @ApiOperation("登出")
+    @GetMapping("/logout")
+    public ResultSet<Void> logout(HttpSession session){
+        session.invalidate();
         return Result.success("登出成功");
     }
 

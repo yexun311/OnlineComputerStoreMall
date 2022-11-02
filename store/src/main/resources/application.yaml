@@ -1,9 +1,5 @@
 # dev-开发环境 st-测试环境 prod-生产环境
 
-server:
-  servlet:
-    context-path: /store
-
 spring:
   profiles:
     active: dev
