@@ -5,7 +5,7 @@
 - application/x-www-form-urlencoded (默认)
     - 传 name1=value1&name2=value2 (&连接)
     - 后端接收数据的对象不用加注解
-- application.json
+- application/json
     - 传 {name1: "value1", name2: "value2"} json 字符串
     - 后端接受数据需加 @RequestBody 注解, 或通过 http 请求获取
 

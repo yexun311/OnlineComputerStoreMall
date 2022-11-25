@@ -43,11 +43,5 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-        /* swagger doc.html 配置 */
-        registry.addResourceHandler("doc.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-    }
 }

@@ -10,4 +10,8 @@ public class constant {
     ///** 头像类型 */
     // public static final
 
+    public static final String APP_TOKEN = "STORE-APP-TOKEN";
+
+    public static final String ADMIN_TOKEN = "STORE-ADMIN-TOKEN";
+
 }

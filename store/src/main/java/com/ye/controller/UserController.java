@@ -2,18 +2,14 @@ package com.ye.controller;
 
 import com.ye.common.result.Result;
 import com.ye.common.result.ResultSet;
-import com.ye.model.req.LoginReq;
-import com.ye.model.req.RegisterReq;
 import com.ye.model.resp.UserInfoResp;
-import com.ye.model.dto.LoginDto;
 import com.ye.exception.FailException;
-import com.ye.server.IUserService;
+import com.ye.service.IUserService;
 import com.ye.util.SessionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -96,13 +92,14 @@ public class UserController {
         //File对象指向这个路径,通过判断File是否存在得到该路径是否存在
         File dir = new File(parent);
         if (!dir.exists()) {//检测目录是否存在
-            dir.mkdirs();//创建当前目录
+            boolean flag = dir.mkdirs();//创建当前目录
         }
 
         //获取这个文件名称(文件名+后缀,如avatar01.png,不包含父目录结构)用UUID
         // 工具生成一个新的字符串作为文件名(好处:避免了因文件名重复发生的覆盖)
         String originalFilename = file.getOriginalFilename();
         System.out.println("OriginalFilename="+originalFilename);
+        assert originalFilename != null;
         int index = originalFilename.lastIndexOf(".");
         String suffix = originalFilename.substring(index);
         //filename形如SAFS1-56JHIOHI-HIUGHUI-5565TYRF.png

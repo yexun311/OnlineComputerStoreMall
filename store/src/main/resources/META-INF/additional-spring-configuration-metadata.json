@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "swagger.is.enable",
+      "type": "java.lang.Double",
+      "description": "Description for swagger.is.enable.",
+      "defaultValue": true
+    },
+    {
+      "name": "address.maxCount",
+      "type": "java.lang.Integer",
+      "description": "Description for address.maxCount.",
+      "defaultValue": 20
+    }
+  ]
+}

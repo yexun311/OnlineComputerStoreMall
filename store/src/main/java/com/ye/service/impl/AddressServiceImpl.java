@@ -1,12 +1,13 @@
-package com.ye.server.impl;
+package com.ye.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ye.model.entity.AddressEntity;
 import com.ye.model.entity.UserEntity;
 import com.ye.exception.FailException;
 import com.ye.mapper.AddressMapper;
 import com.ye.mapper.UserMapper;
-import com.ye.server.IAddressService;
+import com.ye.service.IAddressService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Service
-public class AddressServiceImpl implements IAddressService {
+public class AddressServiceImpl extends ServiceImpl<AddressMapper, AddressEntity> implements IAddressService {
 
     @Resource
     UserMapper userMapper;

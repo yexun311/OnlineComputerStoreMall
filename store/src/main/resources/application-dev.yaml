@@ -33,5 +33,9 @@ mybatis-plus:
   mapper-locations: classpath:/mapper/*.xml
 
 
+
 address:
   maxCount: 20
+swagger:
+  is:
+    enable: true

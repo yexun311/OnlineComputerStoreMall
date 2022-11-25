@@ -1,4 +1,4 @@
-package com.ye.server;
+package com.ye.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ye.model.req.RegisterReq;

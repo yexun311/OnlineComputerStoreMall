@@ -5,7 +5,7 @@ import com.ye.common.result.ResultSet;
 import com.ye.model.dto.LoginDto;
 import com.ye.model.req.LoginReq;
 import com.ye.model.req.RegisterReq;
-import com.ye.server.IUserService;
+import com.ye.service.IUserService;
 import com.ye.util.SessionUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;

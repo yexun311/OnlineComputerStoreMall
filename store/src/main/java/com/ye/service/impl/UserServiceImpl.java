@@ -1,4 +1,4 @@
-package com.ye.server.impl;
+package com.ye.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -9,7 +9,7 @@ import com.ye.model.dto.LoginDto;
 import com.ye.model.entity.UserEntity;
 import com.ye.exception.FailException;
 import com.ye.mapper.UserMapper;
-import com.ye.server.IUserService;
+import com.ye.service.IUserService;
 import com.ye.util.MD5Util;
 import com.ye.util.StringUtil;
 import org.springframework.beans.BeanUtils;
