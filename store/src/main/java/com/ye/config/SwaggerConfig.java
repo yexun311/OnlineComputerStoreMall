@@ -58,7 +58,6 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
                 .build();
     }
 
-
     /**
      * 防止@EnableMvc把默认的静态资源路径覆盖了，手动设置的方式
      */

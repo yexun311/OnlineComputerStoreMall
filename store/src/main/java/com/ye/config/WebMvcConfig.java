@@ -4,7 +4,6 @@ import com.ye.intercepter.LoginHandlerInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         patterns.add("/images/**");
         patterns.add("/js/**");
         patterns.add("/web/register.html");
-        patterns.add("/web/login.html");
+        patterns.add("/web/loginz.html");
         patterns.add("/web/index.html");
         patterns.add("/web/product.html");
         patterns.add("/reg");
@@ -40,8 +39,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(interceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(patterns);
-
+        
     }
-
 
 }
